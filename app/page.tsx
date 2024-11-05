@@ -1,11 +1,11 @@
 // @ts-nocheck
 'use client'
 import { useState, useEffect } from 'react'
-import { ArrowRight, Leaf, Recycle, Users, Coins, MapPin, ChevronRight } from 'lucide-react'
+import { ArrowRight, Leaf, Recycle, Users, Coins, MapPin} from 'lucide-react'
 import { Button } from '@/components/ui/button'
 import { Poppins } from 'next/font/google'
 import Link from 'next/link'
-import ContractInteraction from '@/components/ContractInteraction'
+// import ContractInteraction from '@/components/ContractInteraction'
 import { getRecentReports, getAllRewards, getWasteCollectionTasks } from '@/utils/db/actions'
 const poppins = Poppins({ 
   weight: ['300', '400', '600'],

@@ -144,7 +144,7 @@ export default function ReportPage() {
           setVerificationStatus('failure');
         }
       } catch (error) {
-        console.error('Failed to parse JSON response:', text);
+        console.error('Failed to parse JSON response:', error);
         setVerificationStatus('failure');
       }
     } catch (error) {
