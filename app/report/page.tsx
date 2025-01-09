@@ -101,7 +101,6 @@ export default function ReportPage() {
     try {
       const genAI = new GoogleGenerativeAI(geminiApiKey!);
       const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-
       const base64Data = await readFileAsBase64(file);
 
       const imageParts = [
@@ -127,10 +126,10 @@ export default function ReportPage() {
 
       const result = await model.generateContent([prompt, ...imageParts]);
       const response = await result.response;
-      const text = response.text();
-      
+      const text = await response.text();
       try {
-        const parsedResult = JSON.parse(text);
+        const cleanText = text.replace(/```json|```/g, '').trim();
+        const parsedResult = JSON.parse(cleanText);
         if (parsedResult.foodType && parsedResult.quantity && parsedResult.confidence) {
           setVerificationResult(parsedResult);
           setVerificationStatus('success');
