@@ -13,6 +13,41 @@ type Reward = {
   userName: string | null
 }
 
+// Function to calculate level based on points
+const calculateLevel = (points: number): number => {
+  if (points >= 100) return 3;
+  if (points >= 50) return 2;
+  return 1;
+};
+
+// Function to get level badge styling
+const getLevelBadgeStyle = (level: number): string => {
+  switch (level) {
+    case 3:
+      return "bg-gradient-to-r from-yellow-400 to-yellow-600 text-white";
+    case 2:
+      return "bg-gradient-to-r from-gray-400 to-gray-600 text-white";
+    case 1:
+      return "bg-gradient-to-r from-green-400 to-green-600 text-white";
+    default:
+      return "bg-indigo-100 text-indigo-800";
+  }
+};
+
+// Function to get level description
+const getLevelDescription = (level: number): string => {
+  switch (level) {
+    case 3:
+      return "Master";
+    case 2:
+      return "Advanced";
+    case 1:
+      return "Beginner";
+    default:
+      return "New";
+  }
+};
+
 export default function LeaderboardPage() {
   const [rewards, setRewards] = useState<Reward[]>([])
   const [loading, setLoading] = useState(true)
@@ -51,6 +86,31 @@ export default function LeaderboardPage() {
     <div className="">
       <div className="max-w-3xl mx-auto">
       <h1 className="text-3xl font-semibold mb-6 text-gray-800">Leaderboard </h1>
+      
+      {/* Level Legend */}
+      <div className="bg-white rounded-lg p-4 mb-6 shadow-sm border">
+        <h3 className="text-sm font-semibold text-gray-700 mb-3">Level System</h3>
+        <div className="flex flex-wrap gap-3">
+          <div className="flex items-center">
+            <span className={`px-2 py-1 text-xs font-semibold rounded-full ${getLevelBadgeStyle(1)}`}>
+              Level 1
+            </span>
+            <span className="text-xs text-gray-600 ml-2">Beginner (0-49 points)</span>
+          </div>
+          <div className="flex items-center">
+            <span className={`px-2 py-1 text-xs font-semibold rounded-full ${getLevelBadgeStyle(2)}`}>
+              Level 2
+            </span>
+            <span className="text-xs text-gray-600 ml-2">Advanced (50-99 points)</span>
+          </div>
+          <div className="flex items-center">
+            <span className={`px-2 py-1 text-xs font-semibold rounded-full ${getLevelBadgeStyle(3)}`}>
+              Level 3
+            </span>
+            <span className="text-xs text-gray-600 ml-2">Master (100+ points)</span>
+          </div>
+        </div>
+      </div>
 
         {loading ? (
           <div className="flex justify-center items-center h-64">
@@ -104,9 +164,14 @@ export default function LeaderboardPage() {
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
-                        <span className="px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full bg-indigo-100 text-indigo-800">
-                          Level {reward.level}
-                        </span>
+                        <div className="flex flex-col">
+                          <span className={`px-3 py-1 inline-flex text-sm leading-5 font-semibold rounded-full ${getLevelBadgeStyle(calculateLevel(reward.points))}`}>
+                            Level {calculateLevel(reward.points)}
+                          </span>
+                          <span className="text-xs text-gray-500 mt-1">
+                            {getLevelDescription(calculateLevel(reward.points))}
+                          </span>
+                        </div>
                       </td>
                     </tr>
                   ))}

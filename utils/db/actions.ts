@@ -306,20 +306,32 @@ export async function updateTaskStatus(reportId: number, newStatus: string, coll
 
 export async function getAllRewards() {
   try {
-    const rewards = await db
+    // Get all users with their calculated points from transactions
+    const users = await db
       .select({
-        id: Rewards.id,
-        userId: Rewards.userId,
-        points: Rewards.points,
-        createdAt: Rewards.createdAt,
-        userName: Users.name,
+        id: Users.id,
+        name: Users.name,
+        createdAt: Users.createAt,
       })
-      .from(Rewards)
-      .leftJoin(Users, eq(Rewards.userId, Users.id))
-      .orderBy(desc(Rewards.points))
+      .from(Users)
       .execute();
 
-    return rewards;
+    // Calculate points for each user from transactions
+    const rewardsWithPoints = await Promise.all(
+      users.map(async (user) => {
+        const userBalance = await getUserBalance(user.id);
+        return {
+          id: user.id, // Use user ID as reward ID for consistency
+          userId: user.id,
+          points: userBalance,
+          createdAt: user.createdAt,
+          userName: user.name,
+        };
+      })
+    );
+
+    // Sort by points in descending order
+    return rewardsWithPoints.sort((a, b) => b.points - a.points);
   } catch (error) {
     console.error("Error fetching all rewards:", error);
     return [];
